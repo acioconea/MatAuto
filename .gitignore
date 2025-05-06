@@ -1,0 +1,31 @@
+# Python virtual environment
+.venv/
+
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+
+# Editor settings
+.vscode/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Logs and output
+*.log
+*.out
+*.rpt
+
+# ANSYS result files (optional)
+*.rst
+*.db
+*.lock
+
+
+*.vtp
+.idea

@@ -1,0 +1,55 @@
+/COM,ANSYS RELEASE Release 19.0      BUILD 19.0      UP20171214       01:29:30
+
+ *** WARNING ***                         CP =       0.797   TIME= 01:29:34
+ Element shape checking is currently inactive.  Issue SHPP,ON or         
+ SHPP,WARN to reactivate, if desired.                                    
+
+ *** WARNING ***                         CP =       0.891   TIME= 01:29:34
+ Material number 12 (used by element 58988 ) should normally have at     
+ least one MP or one TB type command associated with it.  Output of      
+ energy by material may not be available.                                
+
+ *** WARNING ***                         CP =       2.266   TIME= 01:29:35
+ Overconstraint may occur for Lagrange multiplier or MPC based contact   
+ algorithm.                                                              
+
+ *** WARNING ***                         CP =       2.266   TIME= 01:29:35
+ Boundary conditions, coupling, and/or constraint equations have been    
+ applied on certain contact nodes (for example 211302).                  
+
+ *** WARNING ***                         CP =       3.703   TIME= 01:29:36
+ Coefficient ratio exceeds 1.0e8 - Check results.                        
+
+ *** WARNING ***                         CP =      55.672   TIME= 01:30:05
+ Material number 12 (used by element 58988 ) should normally have at     
+ least one MP or one TB type command associated with it.  Output of      
+ energy by material may not be available.                                
+
+ *** WARNING ***                         CP =     224.266   TIME= 01:31:39
+ Material number 12 (used by element 58988 ) should normally have at     
+ least one MP or one TB type command associated with it.  Output of      
+ energy by material may not be available.                                
+
+ *** ERROR ***                           CP =     773.875   TIME= 01:36:45
+ Element 2116 (type = 2, SOLID186) (and maybe other elements) has become 
+ highly distorted.  Excessive distortion of elements is usually a        
+ symptom indicating the need for corrective action elsewhere.  Try       
+ incrementing the load more slowly (increase the number of substeps or   
+ decrease the time step size).  You may need to improve your mesh to     
+ obtain elements with better aspect ratios.  Also consider the behavior  
+ of materials, contact pairs, and/or constraint equations.  Please rule  
+ out other root causes of this failure before attempting rezoning or     
+ nonlinear adaptive solutions.  If this message appears in the first     
+ iteration of first substep, be sure to perform element shape checking.  
+
+ *** ERROR ***                           CP =    1143.141   TIME= 01:40:12
+ Element 2116 (type = 2, SOLID186) (and maybe other elements) has become 
+ highly distorted.  Excessive distortion of elements is usually a        
+ symptom indicating the need for corrective action elsewhere.  Try       
+ incrementing the load more slowly (increase the number of substeps or   
+ decrease the time step size).  You may need to improve your mesh to     
+ obtain elements with better aspect ratios.  Also consider the behavior  
+ of materials, contact pairs, and/or constraint equations.  Please rule  
+ out other root causes of this failure before attempting rezoning or     
+ nonlinear adaptive solutions.  If this message appears in the first     
+ iteration of first substep, be sure to perform element shape checking.  

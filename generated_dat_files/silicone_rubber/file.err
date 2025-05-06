@@ -1,0 +1,100 @@
+/COM,ANSYS RELEASE Release 19.0      BUILD 19.0      UP20171214       00:25:44
+
+ *** WARNING ***                         CP =       0.734   TIME= 00:25:49
+ Element shape checking is currently inactive.  Issue SHPP,ON or         
+ SHPP,WARN to reactivate, if desired.                                    
+
+ *** WARNING ***                         CP =       0.828   TIME= 00:25:49
+ Material number 12 (used by element 58988 ) should normally have at     
+ least one MP or one TB type command associated with it.  Output of      
+ energy by material may not be available.                                
+
+ *** WARNING ***                         CP =       2.172   TIME= 00:25:50
+ Overconstraint may occur for Lagrange multiplier or MPC based contact   
+ algorithm.                                                              
+
+ *** WARNING ***                         CP =       2.172   TIME= 00:25:50
+ Boundary conditions, coupling, and/or constraint equations have been    
+ applied on certain contact nodes (for example 211302).                  
+
+ *** WARNING ***                         CP =       3.578   TIME= 00:25:51
+ Coefficient ratio exceeds 1.0e8 - Check results.                        
+
+ *** WARNING ***                         CP =      63.656   TIME= 00:26:25
+ Material number 12 (used by element 58988 ) should normally have at     
+ least one MP or one TB type command associated with it.  Output of      
+ energy by material may not be available.                                
+
+ *** WARNING ***                         CP =     277.359   TIME= 00:28:24
+ Material number 12 (used by element 58988 ) should normally have at     
+ least one MP or one TB type command associated with it.  Output of      
+ energy by material may not be available.                                
+
+ *** ERROR ***                           CP =     665.047   TIME= 00:32:05
+ Element 1413 (type = 2, SOLID186) (and maybe other elements) has become 
+ highly distorted.  Excessive distortion of elements is usually a        
+ symptom indicating the need for corrective action elsewhere.  Try       
+ incrementing the load more slowly (increase the number of substeps or   
+ decrease the time step size).  You may need to improve your mesh to     
+ obtain elements with better aspect ratios.  Also consider the behavior  
+ of materials, contact pairs, and/or constraint equations.  Please rule  
+ out other root causes of this failure before attempting rezoning or     
+ nonlinear adaptive solutions.  If this message appears in the first     
+ iteration of first substep, be sure to perform element shape checking.  
+
+ *** ERROR ***                           CP =     927.234   TIME= 00:34:33
+ Element 1413 (type = 2, SOLID186) (and maybe other elements) has become 
+ highly distorted.  Excessive distortion of elements is usually a        
+ symptom indicating the need for corrective action elsewhere.  Try       
+ incrementing the load more slowly (increase the number of substeps or   
+ decrease the time step size).  You may need to improve your mesh to     
+ obtain elements with better aspect ratios.  Also consider the behavior  
+ of materials, contact pairs, and/or constraint equations.  Please rule  
+ out other root causes of this failure before attempting rezoning or     
+ nonlinear adaptive solutions.  If this message appears in the first     
+ iteration of first substep, be sure to perform element shape checking.  
+
+ *** ERROR ***                           CP =    1107.578   TIME= 00:36:15
+ Element 1413 (type = 2, SOLID186) (and maybe other elements) has become 
+ highly distorted.  Excessive distortion of elements is usually a        
+ symptom indicating the need for corrective action elsewhere.  Try       
+ incrementing the load more slowly (increase the number of substeps or   
+ decrease the time step size).  You may need to improve your mesh to     
+ obtain elements with better aspect ratios.  Also consider the behavior  
+ of materials, contact pairs, and/or constraint equations.  Please rule  
+ out other root causes of this failure before attempting rezoning or     
+ nonlinear adaptive solutions.  If this message appears in the first     
+ iteration of first substep, be sure to perform element shape checking.  
+
+ *** WARNING ***                         CP =    1244.125   TIME= 00:37:32
+ Contact element 56306 (real ID 9) status changes abruptly from          
+ no-contact -> contact (with target element 58595).                      
+
+ *** ERROR ***                           CP =    1248.750   TIME= 00:37:35
+ Element 1413 (type = 2, SOLID186) (and maybe other elements) has become 
+ highly distorted.  Excessive distortion of elements is usually a        
+ symptom indicating the need for corrective action elsewhere.  Try       
+ incrementing the load more slowly (increase the number of substeps or   
+ decrease the time step size).  You may need to improve your mesh to     
+ obtain elements with better aspect ratios.  Also consider the behavior  
+ of materials, contact pairs, and/or constraint equations.  Please rule  
+ out other root causes of this failure before attempting rezoning or     
+ nonlinear adaptive solutions.  If this message appears in the first     
+ iteration of first substep, be sure to perform element shape checking.  
+
+ *** ERROR ***                           CP =    1800.547   TIME= 00:42:45
+ Element 1413 (type = 2, SOLID186) (and maybe other elements) has become 
+ highly distorted.  Excessive distortion of elements is usually a        
+ symptom indicating the need for corrective action elsewhere.  Try       
+ incrementing the load more slowly (increase the number of substeps or   
+ decrease the time step size).  You may need to improve your mesh to     
+ obtain elements with better aspect ratios.  Also consider the behavior  
+ of materials, contact pairs, and/or constraint equations.  Please rule  
+ out other root causes of this failure before attempting rezoning or     
+ nonlinear adaptive solutions.  If this message appears in the first     
+ iteration of first substep, be sure to perform element shape checking.  
+
+ *** WARNING ***                         CP =    1800.609   TIME= 00:42:45
+ The unconverged solution (identified as time 3 substep 999999) is       
+ output for analysis debug purposes.  Results should not be used for     
+ any other purpose.                                                      

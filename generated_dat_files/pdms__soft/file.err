@@ -1,0 +1,31 @@
+/COM,ANSYS RELEASE Release 19.0      BUILD 19.0      UP20171214       01:20:37
+
+ *** WARNING ***                         CP =       0.750   TIME= 01:20:42
+ Element shape checking is currently inactive.  Issue SHPP,ON or         
+ SHPP,WARN to reactivate, if desired.                                    
+
+ *** WARNING ***                         CP =       0.844   TIME= 01:20:42
+ Material number 12 (used by element 58988 ) should normally have at     
+ least one MP or one TB type command associated with it.  Output of      
+ energy by material may not be available.                                
+
+ *** WARNING ***                         CP =       2.234   TIME= 01:20:43
+ Overconstraint may occur for Lagrange multiplier or MPC based contact   
+ algorithm.                                                              
+
+ *** WARNING ***                         CP =       2.234   TIME= 01:20:43
+ Boundary conditions, coupling, and/or constraint equations have been    
+ applied on certain contact nodes (for example 211302).                  
+
+ *** WARNING ***                         CP =       3.641   TIME= 01:20:44
+ Coefficient ratio exceeds 1.0e8 - Check results.                        
+
+ *** WARNING ***                         CP =      51.125   TIME= 01:21:10
+ Material number 12 (used by element 58988 ) should normally have at     
+ least one MP or one TB type command associated with it.  Output of      
+ energy by material may not be available.                                
+
+ *** WARNING ***                         CP =     204.203   TIME= 01:22:35
+ Material number 12 (used by element 58988 ) should normally have at     
+ least one MP or one TB type command associated with it.  Output of      
+ energy by material may not be available.                                
