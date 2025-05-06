@@ -25,6 +25,8 @@ Thumbs.db
 *.rst
 *.db
 *.lock
+*.r001
+*.esav
 
 
 *.vtp
