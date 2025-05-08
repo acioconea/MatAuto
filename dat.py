@@ -92,14 +92,15 @@ def run_ansys(ansys_exe_path, folder):
 # === VISUALIZE RESULTS ===
 all_max_deformations = {}
 
-def visualize_deformation_and_stress(folder):
-    rst_file = folder / "file.rst"
+def visualize_deformation_and_stress(folder_material):
+    rst_file = folder_material / "file.rst"
     if not rst_file.exists():
-        print(f"  ⚠️ No .rst file in {folder.name}")
+        print(f"  ⚠️ No .rst file in {folder_material.name}")
         return
 
     try:
         result = pyansys.read_binary(str(rst_file))
+        print(rst_file)
         times = result.time_values
         max_def_list = []
         avg_def_list = []
@@ -109,7 +110,7 @@ def visualize_deformation_and_stress(folder):
             if displacement.shape[1] > 3:
                 displacement = displacement[:, :3]
             elif displacement.shape[1] < 3:
-                print(f"\n  ❌ Not enough displacement components at timestep {i} in {folder.name}: {displacement.shape}")
+                print(f"\n  ❌ Not enough displacement components at timestep {i} in {folder_material.name}: {displacement.shape}")
                 return
 
             total_deformation = np.linalg.norm(displacement, axis=1)
@@ -117,19 +118,19 @@ def visualize_deformation_and_stress(folder):
             avg_def_list.append(total_deformation.mean())
 
         # Save summary
-        all_max_deformations[folder.name] = max_def_list
+        all_max_deformations[folder_material.name] = max_def_list
 
         # Plot max and average deformation
         plt.figure(figsize=(10, 6))
         plt.plot(times, max_def_list, label="Max Deformation", marker='o')
         plt.plot(times, avg_def_list, label="Avg Deformation", marker='x')
-        plt.title(f"Deformation vs Time - {folder.name}")
+        plt.title(f"Deformation vs Time - {folder_material.name}")
         plt.xlabel("Time")
         plt.ylabel("Total Deformation")
         plt.legend()
         plt.grid(True)
         plt.tight_layout()
-        plt.savefig(folder / f"{folder.name}_deformation_plot.png")
+        plt.savefig(folder_material / f"{folder_material.name}_deformation_plot.png")
         plt.close()
 
         # Final timestep visualization
@@ -137,14 +138,14 @@ def visualize_deformation_and_stress(folder):
         if displacement.shape[1] > 3:
             displacement = displacement[:, :3]
         elif displacement.shape[1] < 3:
-            print(f"\n  ❌ Invalid displacement shape for {folder.name}: {displacement.shape}")
+            print(f"\n  ❌ Invalid displacement shape for {folder_material.name}: {displacement.shape}")
             return
 
         total_deformation = np.linalg.norm(displacement, axis=1)
         nodes = result.mesh.nodes
 
         if nodes.shape != displacement.shape:
-            print(f"\n  ⚠️ Shape mismatch in {folder.name}: nodes {nodes.shape} vs disp {displacement.shape}")
+            print(f"\n  ⚠️ Shape mismatch in {folder_material.name}: nodes {nodes.shape} vs disp {displacement.shape}")
             return
 
         deformed_nodes = nodes + displacement
@@ -157,22 +158,23 @@ def visualize_deformation_and_stress(folder):
         plotter.add_scalar_bar(title="Total Deformation")
         plotter.set_background("white")
         plotter.view_vector((0,0, 1))
-        plotter.show(screenshot=str(folder / f"{folder.name}_deformed.png"))
+        plotter.show(screenshot=str(folder_material / f"{folder_material.name}_deformed.png"))
 
         # Save VTK 3D file
-        grid.save(folder / f"{folder.name}_deformed.vtp")
-        print(f"\n  ✅ Saved plots and 3D file for: {folder.name}")
+        grid.save(folder_material / f"{folder_material.name}_deformed.vtp")
+        print(f"\n  ✅ Saved plots and 3D file for: {folder_material.name}")
 
     except Exception as e:
-        print(f"\n  ❌ Visualization failed for {folder.name}: {e}")
+        print(f"\n  ❌ Visualization failed for {folder_material.name}: {e}")
 
 # === EXECUTION ===
-# for folder in tqdm(generated_folders, desc="Running ANSYS"):
-#     run_ansys(ansys_exe_path, folder)
+for folder in tqdm(generated_folders, desc="Running ANSYS"):
+    run_ansys(ansys_exe_path, folder)
 
 for folder in tqdm(generated_folders, desc="Visualizing results"):
     print(f"\n📊 Visualizing: {folder.name}")
     visualize_deformation_and_stress(folder)
+
 
 # === SUMMARY PLOT ===
 plt.figure(figsize=(12, 6))

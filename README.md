@@ -39,8 +39,8 @@ Create an Excel file (e.g. `NeoHookMaterials.xlsx`) with the following columns:
 
 | Material Name       | C1 (MPa) | D1 (1/MPa) |
 |---------------------|----------|------------|
-| Natural Rubber       | 0.35     | 0.005      |
-| Silicone Rubber      | 0.80     | 0.002      |
+| Natural Rubber      | 0.35     | 0.005      |
+| Silicone Rubber     | 0.80     | 0.002      |
 | ...                 | ...      | ...        |
 
 ---
@@ -136,6 +136,4 @@ Feel free to fork and expand.
 ---
 
 ## 🧑‍💻 Author
-
 Cioconea Adina Mariana
-License: MIT
