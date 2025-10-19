@@ -1,3 +1,5 @@
+from time import sleep
+
 import pandas as pd
 import re
 import subprocess
@@ -7,7 +9,20 @@ import numpy as np
 from ansys.mapdl import reader as pyansys
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+import gc
 
+def clean_pyvista():
+    import pyvista as pv
+    pv.plotting.plotting._ALL_PLOTTERS.clear()
+    pv.global_theme.restore_defaults()
+
+
+def clean_ansys_reader(result=None):
+    """Forcefully cleans up PyAnsys reader and memory."""
+    if result is not None:
+        del result
+    pv.global_theme.restore_defaults()  # reset PyVista config (optional)
+    gc.collect()
 # --- INPUT FILES ---
 excel_path = "NeoHookMaterials.xlsx"
 template_path = "ds.dat"
@@ -92,37 +107,45 @@ def run_ansys(ansys_exe_path, folder):
 # === VISUALIZE RESULTS ===
 all_max_deformations = {}
 
-def visualize_deformation_and_stress(folder_material):
-    rst_file = folder_material / "file.rst"
-    if not rst_file.exists():
-        print(f"  ⚠️ No .rst file in {folder_material.name}")
+
+def visualize_deformation(folder_material):
+    rst_files = list(folder_material.glob("*.rst"))
+    if not rst_files:
+        print(f"❌ No .rst file found in {folder_material}")
         return
+    rst_file = rst_files[0]  # or loop if needed
 
     try:
         result = pyansys.read_binary(str(rst_file))
-        print(rst_file)
+        times=[]
         times = result.time_values
         max_def_list = []
         avg_def_list = []
 
-        for i, t in enumerate(times):
-            nnum, displacement = result.nodal_displacement(i)
-            if displacement.shape[1] > 3:
+        # Loop over time steps to extract deformation
+        for i in range(len(times)):
+            _, displacement = result.nodal_displacement(i)
+
+            if displacement.shape[1] >= 3:
                 displacement = displacement[:, :3]
-            elif displacement.shape[1] < 3:
-                print(f"\n  ❌ Not enough displacement components at timestep {i} in {folder_material.name}: {displacement.shape}")
+            else:
+                print(
+                    f"  ❌ Not enough displacement components at timestep {i} in {folder_material.name}: {displacement.shape}")
                 return
 
             total_deformation = np.linalg.norm(displacement, axis=1)
             max_def_list.append(total_deformation.max())
             avg_def_list.append(total_deformation.mean())
 
-        # Save summary
-        all_max_deformations[folder_material.name] = max_def_list
+        # Save summary deformation to global dict if needed
+        if 'all_max_deformations' in globals():
+            all_max_deformations[folder_material.name] = max_def_list
 
-        # Plot max and average deformation
+        # === Plot deformation vs time ===
+        print(max_def_list,rst_file)
+
         plt.figure(figsize=(10, 6))
-        plt.plot(times, max_def_list, label="Max Deformation", marker='o')
+        plt.plot(times, all_max_deformations[folder_material.name], label="Max Deformation", marker='o')
         plt.plot(times, avg_def_list, label="Avg Deformation", marker='x')
         plt.title(f"Deformation vs Time - {folder_material.name}")
         plt.xlabel("Time")
@@ -131,56 +154,158 @@ def visualize_deformation_and_stress(folder_material):
         plt.grid(True)
         plt.tight_layout()
         plt.savefig(folder_material / f"{folder_material.name}_deformation_plot.png")
-        plt.close()
+        plt.figure()  # create new figure
+        plt.close('all')  # ensure all figures are dropped
+        sleep(1)
 
-        # Final timestep visualization
-        nnum, displacement = result.nodal_displacement(-1)
-        if displacement.shape[1] > 3:
-            displacement = displacement[:, :3]
-        elif displacement.shape[1] < 3:
-            print(f"\n  ❌ Invalid displacement shape for {folder_material.name}: {displacement.shape}")
+        # === Final time step: 3D visualization ===
+        _, displacement = result.nodal_displacement(-1)
+        displacement = displacement[:, :3]  # Enforce 3D
+
+        nodes = result.mesh.nodes
+        if nodes.shape != displacement.shape:
+            print(f"  ⚠️ Shape mismatch in {folder_material.name}: nodes {nodes.shape} vs disp {displacement.shape}")
             return
 
         total_deformation = np.linalg.norm(displacement, axis=1)
-        nodes = result.mesh.nodes
-
-        if nodes.shape != displacement.shape:
-            print(f"\n  ⚠️ Shape mismatch in {folder_material.name}: nodes {nodes.shape} vs disp {displacement.shape}")
-            return
-
         deformed_nodes = nodes + displacement
+
         grid = pv.PolyData(deformed_nodes)
         grid.point_data["Total Deformation"] = total_deformation
 
-        # Save deformed PNG (default camera aligned to X)
         plotter = pv.Plotter(off_screen=True)
         plotter.add_mesh(grid, scalars="Total Deformation", cmap="viridis", show_edges=False)
         plotter.add_scalar_bar(title="Total Deformation")
         plotter.set_background("white")
-        plotter.view_vector((0,0, 1))
+        plotter.view_vector((0, 0, 1))
         plotter.show(screenshot=str(folder_material / f"{folder_material.name}_deformed.png"))
+        plotter.close()
 
-        # Save VTK 3D file
         grid.save(folder_material / f"{folder_material.name}_deformed.vtp")
-        print(f"\n  ✅ Saved plots and 3D file for: {folder_material.name}")
+        print(f"  ✅ Saved plots and 3D view for: {folder_material.name}")
 
     except Exception as e:
-        print(f"\n  ❌ Visualization failed for {folder_material.name}: {e}")
+        print(f"  ❌ Visualization failed for {folder_material.name}: {e}")
+
+def save_deformation_plot(folder):
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from ansys.mapdl.reader import read_binary
+
+    # Prepare output folder
+    plot_folder = folder / "plots"
+    plot_folder.mkdir(parents=True, exist_ok=True)
+
+    # Find the .rst file
+    rst_files = list(folder.glob("*.rst"))
+    if not rst_files:
+        print(f"❌ No .rst file found in {folder}")
+        return
+
+    rst_file = rst_files[0]
+    try:
+
+        result = read_binary(str(rst_file))
+        times = result.time_values
+        max_def_list = []
+        avg_def_list = []
+
+        for i in range(len(times)):
+            _, displacement = result.nodal_displacement(i)
+            if displacement.shape[1] >= 3:
+                displacement = displacement[:, :3]
+            else:
+                print(f"❌ Invalid displacement shape at timestep {i} in {folder.name}")
+                return
+            total_deformation = np.linalg.norm(displacement, axis=1)
+            max_def_list.append(total_deformation.max())
+            avg_def_list.append(total_deformation.mean())
+
+        # Plot and save to plots folder
+        plt.figure(figsize=(10, 6))
+        plt.plot(times, max_def_list, label="Max Deformation", marker='o')
+        plt.plot(times, avg_def_list, label="Avg Deformation", marker='x')
+        plt.title(f"Deformation vs Time - {folder.name}")
+        plt.xlabel("Time")
+        plt.ylabel("Total Deformation")
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+
+        save_path = plot_folder / f"{folder.name}_deformation_plot.png"
+        plt.savefig(save_path)
+        plt.close()
+
+        print(f"📈 Saved deformation plot to {save_path}")
+
+        # Optionally return values
+        return max_def_list
+        clean_ansys_reader(result)
+    except Exception as e:
+        print(f"❌ Failed to save deformation plot for {folder.name}: {e}")
+        return None
+
+
+sleep(3)
 
 # === EXECUTION ===
-for folder in tqdm(generated_folders, desc="Running ANSYS"):
-    run_ansys(ansys_exe_path, folder)
+# for folder in tqdm(generated_folders, desc="Running ANSYS"):
+#     run_ansys(ansys_exe_path, folder)
+#
+# for folder in generated_folders:
+#     print(f"\n📊 Visualizing: {folder.name}")
+#     save_deformation_plot(folder)
+#     sleep(0.1)
 
-for folder in tqdm(generated_folders, desc="Visualizing results"):
-    print(f"\n📊 Visualizing: {folder.name}")
-    visualize_deformation_and_stress(folder)
+def get_max_deformation_at_final_step(folder):
+    import numpy as np
+    from ansys.mapdl.reader import read_binary
+
+    rst_files = list(folder.glob("*.rst"))
+    if not rst_files:
+        print(f"❌ No .rst file found in {folder}")
+        return None
+
+    rst_file = rst_files[0]
+    try:
+        result = read_binary(str(rst_file))
+        _, displacement = result.nodal_displacement(-1)  # Last time step
+
+        if displacement.shape[1] >= 3:
+            displacement = displacement[:, :3]
+        else:
+            print(f"❌ Displacement shape invalid for {folder.name}")
+            return None
+
+        total_deformation = np.linalg.norm(displacement, axis=1)
+        max_deformation = total_deformation.max()
+
+        print(f"📏 Max deformation at final step for {folder.name}: {max_deformation:.6f}")
+        return max_deformation
+
+    except Exception as e:
+        print(f"❌ Error processing {folder.name}: {e}")
+        return None
+final_deformations = {}
+
+for folder in generated_folders:
+    max_def = get_max_deformation_at_final_step(folder)
+    if max_def is not None:
+        final_deformations[folder.name] = max_def
+
+import pandas as pd
+
+df = pd.DataFrame(list(final_deformations.items()), columns=["Material", "MaxDeformation_FinalStep"])
+df.to_csv("final_max_deformations.csv", index=False)
+print("✅ Saved max deformations to final_max_deformations.csv")
+
 
 
 # === SUMMARY PLOT ===
 plt.figure(figsize=(12, 6))
 for name, max_vals in all_max_deformations.items():
     plt.plot(range(len(max_vals)), max_vals, label=name, marker='o')
-
+print(all_max_deformations)
 plt.title("Max Total Deformation Over Time for All Materials")
 plt.xlabel("Time Step")
 plt.ylabel("Max Total Deformation")
